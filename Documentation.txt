@@ -1,0 +1,9 @@
+I was recently working on a project that involved 30+ video clips that I had to drag and drop into the inspector and I was sick of it so, naturally, I automated the process.
+
+If you name your variables correctly, you can right click on your mono behaviour and select one of the Auto Populate options All Assets or Scene. It breaks your variable name into search terms and searches the scene/asset database and then, if the types match, it assigns the found object to your field.
+
+Example: I have a file Barking Dog.mp4 so I add public VideoClip BarkingDog; to my script and it will successfully find and assign the video clip from your asset database when Otto is invoked. Note: A space is added before every capital letter (GoodDog => "Good Dog") and _ is replaced with a space when searching the scene/asset database.
+
+Similarly, if you have a VideoPlayer in your scene on an object named DogPlayer then you would add public VideoPlayer DogPlayer; to your script and invoke Auto Populate - Scene or Auto Populate - All by right clicking on your mono behaviour in the inspector and clicking the option.
+
+Super simple but I hope that it saves someone some time!
