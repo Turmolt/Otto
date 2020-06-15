@@ -1,6 +1,6 @@
 ## Otto
 
-Otto can be used to instantly fill out all of your public fields instantly!
+Otto can be used to instantly fill out all of your public fields!
 
 Once the submodule is imported using the steps below it is easy to use Otto:
 
