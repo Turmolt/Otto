@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using UnityEngine.Video;
 
 namespace Gates.Otto
 {
@@ -22,7 +23,7 @@ namespace Gates.Otto
         */
 
         /// <summary>
-        /// Loops through all public fields on the target mono behaviour and searches for a relevant asset in the asset database and scene
+        /// Iterates through all public fields on the target mono behaviour and searches for a relevant asset in the asset database and scene
         /// </summary>
         [MenuItem("CONTEXT/MonoBehaviour/Auto Populate - All")]
         static void AutoPopulateAll(MenuCommand command)
@@ -48,7 +49,7 @@ namespace Gates.Otto
         }
 
         /// <summary>
-        /// Loops through all public fields on the target mono behaviour and searches for a relevant asset in the asset database
+        /// Iterates through all public fields on the target mono behaviour and searches for a relevant asset in the asset database
         /// </summary>
         [MenuItem("CONTEXT/MonoBehaviour/Auto Populate - Assets")]
         static void AutoPopulateAssets(MenuCommand command)
@@ -67,7 +68,7 @@ namespace Gates.Otto
         }
 
         /// <summary>
-        /// Loops through all public fields on the target mono behaviour and searches for a relevant asset in the scene
+        /// Iterates through all public fields on the target mono behaviour and searches for a relevant asset in the scene
         /// </summary>
         [MenuItem("CONTEXT/MonoBehaviour/Auto Populate - Scene")]
         static void AutoPopulateScene(MenuCommand command)
@@ -96,7 +97,7 @@ namespace Gates.Otto
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(asset[0]);
                 var loadedAsset = AssetDatabase.LoadAssetAtPath(assetPath, field.FieldType);
-                if (loadedAsset != null)
+                if (!loadedAsset.Equals(null))
                 {
                     Undo.RecordObject(target, $"Set field {field.Name}");
                     field.SetValue(target, loadedAsset);
@@ -130,7 +131,7 @@ namespace Gates.Otto
                 else targetObject = ((GameObject)targetObject)?.GetComponent(field.FieldType);
             }
 
-            if (targetObject != null)
+            if (!targetObject.Equals(null))
             {
                 Undo.RecordObject(target, $"Set field {field.Name}");
                 field.SetValue(target, targetObject);
@@ -141,7 +142,7 @@ namespace Gates.Otto
         }
         
         /// <summary>
-        /// Loops through all the objects in the scene and dispatches a recursive retrieval of their children
+        /// Iterates through all the objects in the scene and dispatches a recursive retrieval of their children
         /// </summary>
         static List<GameObject> GetSceneObejcts()
         {
