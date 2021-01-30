@@ -7,15 +7,22 @@ using UnityEditor;
 using UnityEngine.SceneManagement;
 using System.Linq;
 
-namespace Helios.Otto
+namespace Gates.Otto
 {
     //add me to an Editor folder
     public class Otto
     {
+        /*
+        *   This is a helper tool that will attempt to fill all of the target mono behavior's public fields with references by searching through the scene and asset database
+        *
+        *   How to use:
+        *   Name your public variables in a way that matches the asset/scene object it should reference and then execute an Auto Populate method
+        *   Separate your search terms with an underscore or camel case, and be as specific as possible with your variable names to help Otto to find the right assets
+        *   Example: "Optimistic Unicorn.mp4" can be found with variable names "Optimistic", "Unicorn", or best of all: "OptimisticUnicorn"
+        */
+
         /// <summary>
-        /// Loops through all public fields on the target mono behaviour and searches for a relevant asset in the asset database
-        /// Separate your search terms with an underscore, and being as specific as possible with your variable names helps Otto to find the right assets
-        /// Example: "Optimistic Unicorn.mp4" can be found with variable names "Optimistic", "Unicorn", or best of all: "OptimisticUnicorn"
+        /// Loops through all public fields on the target mono behaviour and searches for a relevant asset in the asset database and scene
         /// </summary>
         [MenuItem("CONTEXT/MonoBehaviour/Auto Populate - All")]
         static void AutoPopulateAll(MenuCommand command)
@@ -40,6 +47,9 @@ namespace Helios.Otto
             Debug.Log($"[Otto]: All done! I set {fieldsSet} fields");
         }
 
+        /// <summary>
+        /// Loops through all public fields on the target mono behaviour and searches for a relevant asset in the asset database
+        /// </summary>
         [MenuItem("CONTEXT/MonoBehaviour/Auto Populate - Assets")]
         static void AutoPopulateAssets(MenuCommand command)
         {
@@ -56,6 +66,9 @@ namespace Helios.Otto
             Debug.Log($"[Otto]: All done! I set {fieldsSet} fields");
         }
 
+        /// <summary>
+        /// Loops through all public fields on the target mono behaviour and searches for a relevant asset in the scene
+        /// </summary>
         [MenuItem("CONTEXT/MonoBehaviour/Auto Populate - Scene")]
         static void AutoPopulateScene(MenuCommand command)
         {
@@ -73,6 +86,9 @@ namespace Helios.Otto
             Debug.Log($"[Otto]: All done! I set {fieldsSet} fields");
         }
 
+        /// <summary>
+        /// Searches through the asset database to find an asset with a matching name
+        /// </summary>
         static bool SearchAssets(UnityEngine.Object target, string search, FieldInfo field)
         {
             var asset = AssetDatabase.FindAssets(search);
@@ -90,6 +106,9 @@ namespace Helios.Otto
             return false;
         }
 
+        /// <summary>
+        /// Searches through the scene to find an asset with a matching name
+        /// </summary>
         static bool SearchScene(UnityEngine.Object target, string search, FieldInfo field, List<GameObject> obj)
         {
             //if we can't even find the obejct type in the scene, why search for it?
@@ -120,7 +139,10 @@ namespace Helios.Otto
 
             return false;
         }
-
+        
+        /// <summary>
+        /// Loops through all the objects in the scene and dispatches a recursive retrieval of their children
+        /// </summary>
         static List<GameObject> GetSceneObejcts()
         {
             List<GameObject> obj = new List<GameObject>();
@@ -133,6 +155,9 @@ namespace Helios.Otto
             return obj;
         }
 
+        /// <summary>
+        /// Recursively returns a list of all of the children of a game object
+        /// </summary>
         static void GetChildren(ref List<GameObject> l, Transform t)
         {
             if (!l.Contains(t.gameObject)) l.Add(t.gameObject);
@@ -155,12 +180,18 @@ namespace Helios.Otto
             }
         }
 
+        /// <summary>
+        /// Breaks up the name of a variable into searchable terms
+        /// </summary>
         static string ParseName(string name)
         {
             var parsedName = String.Join(" ", Regex.Split(name, @"(?<!^)(?=[A-Z])"));
             return parsedName.Replace('_', ' ');
         }
 
+        /// <summary>
+        /// Some types will never be found in the scene, so we should not search for them in the scene
+        /// </summary>
         static bool TypeNotSceneCompatible(Type type)
         {
             return (!type.IsSubclassOf(typeof(MonoBehaviour)) && !type.IsSubclassOf(typeof(Behaviour)) && type.Name != "GameObject");
